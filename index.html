@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="salesforce-lightning-design-system.min.css">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title>Electronを使ってPCアプリにしたカスタム項目作るくん</title>
+</head>
+
+<body>
+  <div class="slds-box slds-box_small">
+
+    <div class="slds-text-heading_large">カスタム項目作くん Electron版</div>
+
+    <div class="slds-form-element">
+      <label class="slds-m-top_small slds-form-element__label">Login URL</label>
+      <div class="slds-form-element__control">
+        <input type="text" id="loginurl" placeholder="https://..." class="slds-input"
+          value="https://login.salesforce.com" />
+      </div>
+
+      <label class="slds-m-top_small slds-form-element__label">Username</label>
+      <div class="slds-form-element__control">
+        <input type="text" id="username" placeholder="login user name" class="slds-input" />
+      </div>
+
+      <label class="slds-m-top_small slds-form-element__label">Password</label>
+      <div class="slds-form-element__control">
+        <input type="text" id="password" placeholder="'password' or 'password+security token'" class="slds-input" />
+      </div>
+
+      <span class="slds-m-top_small slds-form-element__label">Xlsx file</span>
+      <div class="slds-form-element__control">
+        <div class="slds-file-selector slds-file-selector_files">
+          <div class="slds-file-selector__dropzone">
+            <input type="file" class="slds-file-selector__input slds-assistive-text" id="xlsxfile"
+              aria-labelledby="file-selector-primary-label file-selector-secondary-label" />
+            <label class="slds-file-selector__body" for="xlsxfile">
+              <span class="slds-file-selector__button slds-button slds-button_neutral">
+                <svg class="slds-button__icon slds-button__icon_left">
+                  <use xlink:href="symbols.svg#file"></use>
+                </svg>Xlsx Files</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <span id="xlsxfilepass"></span>
+    <button class="slds-m-top_medium slds-button slds-button_neutral slds-button_stretch" id="excute">実行</button>
+
+  </div>
+
+  </div>
+  <div class="slds-box slds-box_small" id="result">
+
+  </div>
+
+</body>
+
+</html>
