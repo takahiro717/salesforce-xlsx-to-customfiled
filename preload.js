@@ -5,6 +5,7 @@ const XLSX = require("xlsx");
 const jsforce = require('jsforce');
 //let username = "komori@cunning-koala-3uji3.com"; //ログイン用ユーザーネーム
 //let password = "takahiro717amyE4KDe9dSdBFBg1YpdTX86f";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
+let loginurl;
 let username;
 let password;
 let xlsxfile;
@@ -90,6 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
  * 画面から値を受け取る
  */
 function getFromValue() {
+  loginurl = document.getElementById('loginurl').value;
   username = document.getElementById('username').value;
   password = document.getElementById('password').value;
   if (document.getElementById('xlsxfile').files[0]) {
@@ -111,11 +113,12 @@ function showResultText(ArgTest) {
 
 function JSforceUpsert() {
   getFromValue();
-  if (!username || !password || !xlsxfile) {
+  if (!loginurl || !username || !password || !xlsxfile) {
     showResultText("実行中止");
     return null
   }
   upsertResultText = "";
+  console.log(loginurl);
   console.log(username);
   console.log(password);
   console.log(xlsxfile);
@@ -138,7 +141,7 @@ function JSforceUpsert() {
   const fieldPermissions = getPermissionsFromXslx(profiles);
   console.log(fieldPermissions);
 
-  let conn = new jsforce.Connection({ loginUrl: 'https://login.salesforce.com/' });
+  let conn = new jsforce.Connection({ loginUrl: loginurl });
   let slicedFields;
   //showResultText("Salesforce通信開始");
   conn.login(username, password)
