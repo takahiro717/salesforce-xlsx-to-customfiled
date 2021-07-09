@@ -1,17 +1,15 @@
+
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
-
 const XLSX = require("xlsx");
 const jsforce = require('jsforce');
-//let username = "komori@cunning-koala-3uji3.com"; //ログイン用ユーザーネーム
-//let password = "takahiro717amyE4KDe9dSdBFBg1YpdTX86f";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
 let loginurl;
 let username;
 let password;
 let xlsxfile;
 
 // jsforce用の設定
-const excelCol = 300; //13以上の数値、エクセル行の800まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
+const excelCol = 813; //13以上の数値、エクセル行の813まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 let workbook;
 let sheet;
 let upsertResultText;
@@ -82,13 +80,16 @@ const sheetCol = {
   FIX: "AV", //FIX
 }
 
+/**
+ * HTML読み込み直後にイベントを付与する
+ */
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('xlsxfile').addEventListener('change', showFilePath);
   document.getElementById('excute').addEventListener('click', JSforceUpsert);
 })
 
 /**
- * 画面から値を受け取る
+ * 画面から値を受け取る関数
  */
 function getFromValue() {
   loginurl = document.getElementById('loginurl').value;
@@ -100,30 +101,44 @@ function getFromValue() {
 }
 
 /**
- * 
+ * エクセルファイルのパスを画面に表示する
  */
 function showFilePath() {
   xlsxfile = document.getElementById('xlsxfile').files[0].path;
   document.getElementById('xlsxfilepass').innerText = xlsxfile;
 }
 
-function showResultText(ArgTest) {
-  document.getElementById('result').innerHTML = ArgTest;
+
+/**
+ * リザルト表示用のHTMLを指定　いらんかも
+ * @param {string} html
+ */
+function showResultHtml(html) {
+  document.getElementById('result').innerHTML = html;
 }
 
+
+/**
+ * メインの処理
+ * @returns 
+ */
 function JSforceUpsert() {
+  // 初期化
   getFromValue();
+  upsertResultText = "";
+
+  // 情報が足りないときは実行を中止する
   if (!loginurl || !username || !password || !xlsxfile) {
-    showResultText("実行中止");
+    showResultHtml("実行中止");
     return null
   }
-  upsertResultText = "";
+
   console.log(loginurl);
   console.log(username);
   console.log(password);
   console.log(xlsxfile);
 
-  showResultText("エクセルファイル読み込み");
+  showResultHtml("エクセルファイル読み込み");
   workbook = XLSX.readFile(xlsxfile);
   sheet = workbook.Sheets["項目"];
   console.log(workbook);
@@ -141,24 +156,67 @@ function JSforceUpsert() {
   const fieldPermissions = getPermissionsFromXslx(profiles);
   console.log(fieldPermissions);
 
+  // ログインURLを設定
   let conn = new jsforce.Connection({ loginUrl: loginurl });
-  let slicedFields;
-  //showResultText("Salesforce通信開始");
+
+  //showResultHtml("Salesforce通信開始");
   conn.login(username, password)
     .then(() => {
-      showResultText("ログイン成功");
+      showResultHtml("ログイン成功");
+      /*
       // API制限回避のため、配列を10個ずつに分割して処理している
       for (let i = 0; i < customFields.length; i += 10) {
         slicedFields = customFields.slice(i, i + 10);
         upsert(conn, slicedFields);
       }
-      security(conn, profiles, fieldPermissions);
+      */
+      upsert(conn, customFields, profiles, fieldPermissions);
     }, err => {
       console.error(err);
-      showResultText(err);
+      showResultHtml(err);
     });
 }
 
+/**
+ * JSforceでカスタム項目のUPSERTをする 後で処理をばらす
+ * @param {object[]} customFields 
+ */
+async function upsert(conn, customFields, profiles, fieldPermissions) {
+  for (let i = 0; i < customFields.length; i += 10) {
+    slicedFields = customFields.slice(i, i + 10);
+    await conn.metadata.upsert('CustomField', slicedFields)
+      .then(results => {
+        // 結果が1件のときは配列ではなくオブジェクトで返ってくる
+        if (Array.isArray(results) == false) {
+          showUpsertResult(results);
+        } else {
+          for (let result of results) {
+            showUpsertResult(result);
+          }
+        }
+      }, err => {
+        console.error(err);
+        showUpsertResult(err);
+      });
+  }
+  security(conn, profiles, fieldPermissions);
+  return true;
+}
+
+/**
+ * JSforceでカスタム項目のUPSERTをした後の結果表示
+ * @param {object} result Jsforceから返ってきた結果
+ */
+function showUpsertResult(result) {
+  if (result.success == false) {
+    upsertResultText += '<span class="slds-text-color_error">upsert result : ' + result.success + ' : ' + result.fullName + '</span><br>';
+    console.log(consoleColorRed + 'upsert result : ' + result.success + ' : ' + result.fullName + consoleColorReset);
+  } else {
+    upsertResultText += 'upsert result : ' + result.success + ' : ' + result.fullName + '<br>';
+    console.log('upsert result : ' + result.success + ' : ' + result.fullName);
+  }
+  showResultHtml(upsertResultText)
+}
 
 /**
  * JSforceでカスタム項目レベルセキュリティの設定をする
@@ -176,46 +234,12 @@ function security(conn, profiles, fieldPermissions) {
           upsertResultText += 'set permission result : ' + results.success + ' : ' + results.fullName + '<br>'
           console.log('set permission result : ' + results.success + ' : ' + results.fullName);
         }
-        showResultText(upsertResultText)
+        showResultHtml(upsertResultText)
       }, err => {
         console.error(err);
+        showResultHtml(err);
       });
   }
-}
-
-/**
- * JSforceでカスタム項目のUPSERTをする
- * @param {object[]} slicedFields 10件ずつのカスタムフィールドメタデータオブジェクトの配列
- */
-function upsert(conn, slicedFields) {
-  conn.metadata.upsert('CustomField', slicedFields)
-    .then(results => {
-      // 結果が1件のときは配列ではなくオブジェクトで返ってくる
-      if (Array.isArray(results) == false) {
-        showUpsertResult(results);
-      } else {
-        for (let result of results) {
-          showUpsertResult(result);
-        }
-      }
-    }, err => {
-      if (err) { console.error(err); }
-    });
-}
-
-/**
- * JSforceでカスタム項目のUPSERTをした後の結果表示
- * @param {object} result Jsforceから返ってきた結果
- */
-function showUpsertResult(result) {
-  if (result.success == false) {
-    upsertResultText += '<span class="slds-text-color_error">upsert result : ' + result.success + ' : ' + result.fullName + '</span><br>';
-    console.log(consoleColorRed + 'upsert result : ' + result.success + ' : ' + result.fullName + consoleColorReset);
-  } else {
-    upsertResultText += 'upsert result : ' + result.success + ' : ' + result.fullName + '<br>';
-    console.log('upsert result : ' + result.success + ' : ' + result.fullName);
-  }
-  showResultText(upsertResultText)
 }
 
 
