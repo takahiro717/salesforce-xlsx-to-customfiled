@@ -85,7 +85,7 @@ const sheetCol = {
  */
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('xlsxfile').addEventListener('change', showFilePath);
-  document.getElementById('excute').addEventListener('click', JSforceUpsert);
+  document.getElementById('execute').addEventListener('click', JSforceUpsert);
 })
 
 /**
@@ -129,7 +129,7 @@ function JSforceUpsert() {
 
   // 情報が足りないときは実行を中止する
   if (!loginurl || !username || !password || !xlsxfile) {
-    showResultHtml("実行中止");
+    showResultHtml("Error");
     return null
   }
 
@@ -138,9 +138,9 @@ function JSforceUpsert() {
   console.log(password);
   console.log(xlsxfile);
 
-  showResultHtml("エクセルファイル読み込み");
+  showResultHtml("read file");
   workbook = XLSX.readFile(xlsxfile);
-  sheet = workbook.Sheets["項目"];
+  sheet = workbook.Sheets["Field"];
   console.log(workbook);
   console.log(sheet);
 
@@ -162,7 +162,7 @@ function JSforceUpsert() {
   //showResultHtml("Salesforce通信開始");
   conn.login(username, password)
     .then(() => {
-      showResultHtml("ログイン成功");
+      showResultHtml("login");
       /*
       // API制限回避のため、配列を10個ずつに分割して処理している
       for (let i = 0; i < customFields.length; i += 10) {
@@ -270,29 +270,55 @@ function getCustomFieldsFromXlsx() {
       // データ型（type）
       // チェックボックスのデフォルトはfalseで固定
       value = sheet[sheetCol.type + i]['v'];
-      if (value == "自動採番") { value = "AutoNumber"; }
-      else if (value == "積み上げ集計") { value = "Summary"; }
-      else if (value == "外部参照関係") { value = "ExternalLookup"; }
-      else if (value == "参照関係") { value = "Lookup"; }
-      else if (value == "主従関係") { value = "MasterDetail"; }
+      if (value == "自動採番" || value == "Auto Number") { value = "AutoNumber"; }
+      else if (value == "積み上げ集計" || value == "Roll-Up Summary") { value = "Summary"; }
+      else if (value == "外部参照関係" || value == "External Lookup Relationship") { value = "ExternalLookup"; }
+      else if (value == "参照関係" || value == "Lookup Relationship") { value = "Lookup"; }
+      else if (value == "主従関係" || value == "Master-Detail Relationship") { value = "MasterDetail"; }
       else if (value == "URL") { value = "Url"; }
-      else if (value == "チェックボックス") { value = "Checkbox"; fields[cnt].defaultValue = false; }
-      else if (value == "テキスト") { value = "Text"; }
-      else if (value == "テキスト(暗号化) ") { value = "EncryptedText"; }
-      else if (value == "テキストエリア") { value = "TextArea"; }
-      else if (value == "パーセント") { value = "Percent"; }
-      else if (value == "メール") { value = "Email"; }
-      else if (value == "テキストエリア (リッチ)") { value = "Html"; }
-      else if (value == "ロングテキストエリア") { value = "LongTextArea"; }
-      else if (value == "数値") { value = "Number"; }
-      else if (value == "選択リスト") { value = "Picklist"; }
-      else if (value == "選択リスト (複数選択)") { value = "MultiselectPicklist"; }
-      else if (value == "地理位置情報") { value = "Location"; }
-      else if (value == "通貨") { value = "Currency"; }
-      else if (value == "電話") { value = "Phone"; }
-      else if (value == "日付") { value = "Date"; }
-      else if (value == "日付/時間") { value = "DateTime"; }
+      else if (value == "チェックボックス" || value == "Checkbox") { value = "Checkbox"; fields[cnt].defaultValue = false; }
+      else if (value == "テキスト" || value == "Text") { value = "Text"; }
+      else if (value == "テキスト(暗号化) " || value == "Text (Encrypted)") { value = "EncryptedText"; }
+      else if (value == "テキストエリア" || value == "Text Area") { value = "TextArea"; }
+      else if (value == "パーセント" || value == "Percent") { value = "Percent"; }
+      else if (value == "メール" || value == "Email") { value = "Email"; }
+      else if (value == "テキストエリア (リッチ)" || value == "Text Area (Rich)") { value = "Html"; }
+      else if (value == "ロングテキストエリア" || value == "Text Area (Long)") { value = "LongTextArea"; }
+      else if (value == "数値" || value == "Number") { value = "Number"; }
+      else if (value == "選択リスト" || value == "Picklist") { value = "Picklist"; }
+      else if (value == "選択リスト (複数選択)" || value == "Picklist (Multi-Select)") { value = "MultiselectPicklist"; }
+      else if (value == "地理位置情報" || value == "Geolocation") { value = "Location"; }
+      else if (value == "通貨" || value == "Currency") { value = "Currency"; }
+      else if (value == "電話" || value == "Phone") { value = "Phone"; }
+      else if (value == "日付" || value == "Date") { value = "Date"; }
+      else if (value == "日付/時間" || value == "Date/Time") { value = "DateTime"; }
       fields[cnt].type = value;
+      /*
+      自動採番	Auto Number
+      数式	Formula
+      積み上げ集計	Roll-Up Summary
+      係外部参照関	External Lookup Relationship
+      参照関係	Lookup Relationship
+      主従関係	Master-Detail Relationship
+      URL	URL
+      チェックボックス	Checkbox
+      テキスト	Text
+      テキスト(暗号化) 	Text (Encrypted)
+      テキストエリア	Text Area
+      パーセント	Percent
+      メール	Email
+      テキストエリア (リッチ)	Text Area (Rich)
+      ロングテキストエリア	Text Area (Long)
+      数値	Number
+      選択リスト	Picklist
+      選択リスト (複数選択)	Picklist (Multi-Select)
+      地理位置情報	Geolocation
+      通貨	Currency
+      電話	Phone
+      日付	Date
+      日付/時間	Date/Time
+      */
+
 
       // 必須（required）
       if (sheet[sheetCol.required + i]) {
@@ -378,15 +404,24 @@ function getCustomFieldsFromXlsx() {
       // 数値、パーセント、通貨は桁数と小数点が必須になる
       if (sheet[sheetCol.formulaType + i]) {
         value = sheet[sheetCol.formulaType + i]['v'];
-        if (value == "チェックボックス") { value = "Checkbox"; }
-        else if (value == "テキスト") { value = "Text"; }
-        else if (value == "数値") { value = "Number"; }
-        else if (value == "パーセント") { value = "Percent"; }
-        else if (value == "通貨") { value = "Currency"; }
-        else if (value == "日付") { value = "Date"; }
-        else if (value == "日付/時間") { value = "DateTime"; }
+        if (value == "チェックボックス" || value == "Checkbox") { value = "Checkbox"; }
+        else if (value == "テキスト" || value == "Text") { value = "Text"; }
+        else if (value == "数値" || value == "Number") { value = "Number"; }
+        else if (value == "パーセント" || value == "Percent") { value = "Percent"; }
+        else if (value == "通貨" || value == "Currency") { value = "Currency"; }
+        else if (value == "日付" || value == "Date") { value = "Date"; }
+        else if (value == "日付/時間" || value == "Date/Time") { value = "DateTime"; }
         fields[cnt].type = value;
       }
+      /*
+      チェックボックス	Checkbox
+      テキスト	Text
+      数値	Number
+      パーセント	Percent
+      通貨	Currency
+      日付	Date
+      日付/時間	Date/Time
+      */
 
       // 数式（formula）
       if (sheet[sheetCol.formula + i]) {
@@ -396,12 +431,15 @@ function getCustomFieldsFromXlsx() {
       // 数式：空白時（formulaTreatBlanksAs）
       // リファレンスが「formulaTreatBlankAs」になっていた
       if (sheet[sheetCol.formulaTreatBlanksAs + i]) {
-        if (sheet[sheetCol.formulaTreatBlanksAs + i]['v'] == "空白") {
+        if (sheet[sheetCol.formulaTreatBlanksAs + i]['v'] == "空白" || sheet[sheetCol.formulaTreatBlanksAs + i]['v'] == "Blank") {
           fields[cnt].formulaTreatBlanksAs = 'BlankAsBlank'; // 「空白」がエクセルに入力されている場合
         } else {
           fields[cnt].formulaTreatBlanksAs = 'BlankAsZero'; // 「0」がエクセルに入力されている場合                    　　　　　　
         }
       }
+      /*
+      空白 Blank
+      */
 
       // 自動採番：表示形式（displayFormat） A-{00000} = A-00100
       if (sheet[sheetCol.displayFormat + i]) {
@@ -420,11 +458,17 @@ function getCustomFieldsFromXlsx() {
 
       // 積み上げ集計：種別（summaryOperation）
       if (sheet[sheetCol.summaryOperation + i]) {
-        if (sheet[sheetCol.summaryOperation + i]['v'] == '件数') { fields[cnt].summaryOperation = 'Count'; }
-        else if (sheet[sheetCol.summaryOperation + i]['v'] == '合計') { fields[cnt].summaryOperation = 'Sum'; }
-        else if (sheet[sheetCol.summaryOperation + i]['v'] == '最大') { fields[cnt].summaryOperation = 'Max'; }
-        else if (sheet[sheetCol.summaryOperation + i]['v'] == '最小') { fields[cnt].summaryOperation = 'Min'; }
+        if (sheet[sheetCol.summaryOperation + i]['v'] == '件数' || sheet[sheetCol.summaryOperation + i]['v'] == 'COUNT') { fields[cnt].summaryOperation = 'Count'; }
+        else if (sheet[sheetCol.summaryOperation + i]['v'] == '合計' || sheet[sheetCol.summaryOperation + i]['v'] == 'SUM') { fields[cnt].summaryOperation = 'Sum'; }
+        else if (sheet[sheetCol.summaryOperation + i]['v'] == '最大' || sheet[sheetCol.summaryOperation + i]['v'] == 'MAX') { fields[cnt].summaryOperation = 'Max'; }
+        else if (sheet[sheetCol.summaryOperation + i]['v'] == '最小' || sheet[sheetCol.summaryOperation + i]['v'] == 'MIN') { fields[cnt].summaryOperation = 'Min'; }
       }
+      /*
+      件数  COUNT
+      合計  SUM
+      最大  MAX
+      最少  MIN
+      */
 
       // 積み上げ集計：積み上げ項目（summarizedField）
       if (sheet[sheetCol.summarizedField + i]) {
@@ -446,7 +490,7 @@ function getCustomFieldsFromXlsx() {
         let toName = sheet[sheetCol.referenceTo + i]['v'].replace('__c', ''); // 子リレーション名用に__cを削除
         fields[cnt].relationshipName = "Relation_" + fromName + "_to_" + toName;
         //参照関係のときに削除オプションを設定する
-        if (sheet[sheetCol.type + i]['v'] == "参照関係") {
+        if (sheet[sheetCol.type + i]['v'] == "参照関係" || sheet[sheetCol.type + i]['v'] == "Lookup Relationship") {
           if (sheet[sheetCol.required + i]) { //必須項目の場合「参照関係に含まれる参照レコードは削除できません。」に設定
             fields[cnt].deleteConstraint = "Restrict";
           } else { //必須項目ではない場合、「この項目の値をクリアします。 この項目を必須にした場合、このオプションは選択できません。」に設定
@@ -552,6 +596,7 @@ function getPermissionsFromXslx(profiles) {
       //主従関係、数式、必須項目は処理から外す
       if (sheet[sheetCol.label + i] != null
         && sheet[sheetCol.type + i]['v'] != "主従関係"
+        && sheet[sheetCol.type + i]['v'] != "Master-Detail Relationship"
         && sheet[sheetCol.required + i] == null) {
 
         permissions[j].profilePermisson.push({}); // 行単位のオブジェクトを追加
@@ -590,13 +635,13 @@ function getPermissionsFromXslx(profiles) {
  * @returns {string[]} editable、readableの順番で返す
  */
 function selectPermission(value) {
-  if (value == '編集') {
+  if (value == '編集' || value == 'Edit') {
     return ['true', 'true']
   }
-  if (value == '参照') {
+  if (value == '参照' || value == 'Readonly') {
     return ['false', 'true']
   }
-  if (value == '閲覧不可') {
+  if (value == '閲覧不可' || value == 'None') {
     return ['false', 'false']
   }
 }

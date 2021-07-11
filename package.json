@@ -1,7 +1,7 @@
 {
   "name": "salesforce-upsert-customfiled-tool",
   "version": "1.0.0",
-  "description": "Upsert CustomField and FieldPermissions with Excel",
+  "description": "Upsert CustomField and FieldPermissions with Excel - alpha version",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
