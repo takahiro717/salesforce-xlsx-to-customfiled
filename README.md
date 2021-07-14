@@ -1,35 +1,48 @@
 # salesforce-xlsx-to-customfiled
 
-Upsert CustomField and FieldPermissions with Excel - alpha version
+Upsert CustomField and FieldPermissions with Excel.
 
----
+This is [Electron](https://www.electronjs.org/)-based application.
 
-This is alpha version.
+Salesforce 用のエクセルファイルからカスタム項目を作るツールです。
+
+もともと Node.js でコマンドラインを使って動かしていた社内向けに作ったツールです。
 
 # Platforms
 
-Windows 64bit
+Windows 64bit.
 
-# Quick Start
+# Usage
 
-## Download
+## Quick Start
 
-[alpha version](./)
+1. [Download Zip](./)
+2. Execute "salesforce-upsert-customfiled-tool.exe".
+3. Input login information.
+4. Choose "Samples/MinimumSample_Account.xlsx".
+5. Press "Execute" button.
+6. Wait all permission result.
 
-## Use Minimum Sample
+## Define Customfield in .xlsx
 
-1. Execute "salesforce-upsert-customfiled-tool.exe".
-2. Input login information.
-3. Choose "Samples/MinimumSample_Account.xlsx".
-4. Press "Execute" button.
+There are sample definitions in "samples/CustomFieldTest\_\_c.xlsx" file.
 
-# More information
+samples フォルダのエクセルに書き方のサンプルがあります。
 
-See Samples folder.
-"CustomFieldTest\_\_c.xlsx" has samples of data type.
+## Retry Execute
+
+If you defined formula type field, perhaps the field will be error.
+
+項目の UPSERT は 10 件ずつ一括処理をするため数式などはエラーになりやすいです。そのときは再実行すると通ります。
+
+# Usage Command Line
+
+```
+node sfuce.js sample.xlsx
+```
 
 # License
 
 [MIT](/LICENSE)
 
-#
+Copyright (c) 2021 Takahiro Komori
