@@ -22,7 +22,7 @@ Electron勉強後に他のプラットフォームも用意するかも。
 
 1. Download [salesforce-xlsx-to-customfiled-win32-x64-1.0.0.zip
 ](https://github.com/takahiro717/salesforce-xlsx-to-customfiled/releases)
-2. Execute "salesforce-upsert-customfiled-tool.exe".
+2. Run "salesforce-xlsx-to-customfiled.exe".
 3. Input login information.
 4. Choose "Samples/MinimumSample_Account.xlsx".
 5. Press "Execute" button.
