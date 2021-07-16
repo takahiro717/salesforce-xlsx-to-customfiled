@@ -4,13 +4,15 @@ Upsert CustomField and FieldPermissions with Excel.
 
 This is [Electron](https://www.electronjs.org/)-based application.
 
-Salesforce 用のエクセルファイルからカスタム項目を作るツールです。
+エクセルファイルに定義したカスタム項目情報を読み取りJSforceのmetadata APIで一括登録するものです。
 
-もともと Node.js でコマンドラインを使って動かしていた社内向けに作ったツールです。
+もともとコマンドで動かしていたものを身内向けにElectronでデスクトップアプリ化したものです。
 
 # Platforms
 
 Windows 64bit.
+
+Electron勉強後に他のプラットフォームも用意するかも。
 
 # Usage
 
@@ -21,25 +23,23 @@ Windows 64bit.
 3. Input login information.
 4. Choose "Samples/MinimumSample_Account.xlsx".
 5. Press "Execute" button.
-6. Wait all permission result.
+6. Finish when all permission results are displayed.
 
 ## Define Customfield in .xlsx
+
+[samples folder](./samples)
 
 There are sample definitions in "samples/CustomFieldTest\_\_c.xlsx" file.
 
 samples フォルダのエクセルに書き方のサンプルがあります。
 
+
+
 ## Retry Execute
 
-If you defined formula type field, perhaps the field will be error.
+If you defined formula type field, perhaps the field will be error. Please retry.
 
-項目の UPSERT は 10 件ずつ一括処理をするため数式などはエラーになりやすいです。そのときは再実行すると通ります。
-
-# Usage Command Line
-
-```
-node sfuce.js sample.xlsx
-```
+項目の UPSERT は 10 件ずつ一括処理をするため数式などはエラーになりやすいです。再実行すると通ります。
 
 # License
 

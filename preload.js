@@ -129,7 +129,7 @@ function JSforceUpsert() {
 
   // 情報が足りないときは実行を中止する
   if (!loginurl || !username || !password || !xlsxfile) {
-    showResultHtml("Error");
+    showResultHtml("Please input all fields.");
     return null
   }
 
@@ -605,16 +605,16 @@ function getPermissionsFromXslx(profiles) {
         permissions[j].profilePermisson[cnt2].field = sheet['A3']['v'] + "." + sheet[sheetCol.fullName + i]['v'];
 
         // editableとreadableを関数から取得　if文の中に書くと長くなるので関数化した
-        if (j == 0) { set = selectPermission(sheet[sheetCol.profile1 + i]['v']); }
-        if (j == 1) { set = selectPermission(sheet[sheetCol.profile2 + i]['v']); }
-        if (j == 2) { set = selectPermission(sheet[sheetCol.profile3 + i]['v']); }
-        if (j == 3) { set = selectPermission(sheet[sheetCol.profile4 + i]['v']); }
-        if (j == 4) { set = selectPermission(sheet[sheetCol.profile5 + i]['v']); }
-        if (j == 5) { set = selectPermission(sheet[sheetCol.profile6 + i]['v']); }
-        if (j == 6) { set = selectPermission(sheet[sheetCol.profile7 + i]['v']); }
-        if (j == 7) { set = selectPermission(sheet[sheetCol.profile8 + i]['v']); }
-        if (j == 8) { set = selectPermission(sheet[sheetCol.profile9 + i]['v']); }
-        if (j == 9) { set = selectPermission(sheet[sheetCol.profile10 + i]['v']); }
+        if (j == 0 && sheet[sheetCol.profile1 + i] != null) { set = selectPermission(sheet[sheetCol.profile1 + i]['v']); }
+        if (j == 1 && sheet[sheetCol.profile2 + i] != null) { set = selectPermission(sheet[sheetCol.profile2 + i]['v']); }
+        if (j == 2 && sheet[sheetCol.profile3 + i] != null) { set = selectPermission(sheet[sheetCol.profile3 + i]['v']); }
+        if (j == 3 && sheet[sheetCol.profile4 + i] != null) { set = selectPermission(sheet[sheetCol.profile4 + i]['v']); }
+        if (j == 4 && sheet[sheetCol.profile5 + i] != null) { set = selectPermission(sheet[sheetCol.profile5 + i]['v']); }
+        if (j == 5 && sheet[sheetCol.profile6 + i] != null) { set = selectPermission(sheet[sheetCol.profile6 + i]['v']); }
+        if (j == 6 && sheet[sheetCol.profile7 + i] != null) { set = selectPermission(sheet[sheetCol.profile7 + i]['v']); }
+        if (j == 7 && sheet[sheetCol.profile8 + i] != null) { set = selectPermission(sheet[sheetCol.profile8 + i]['v']); }
+        if (j == 8 && sheet[sheetCol.profile9 + i] != null) { set = selectPermission(sheet[sheetCol.profile9 + i]['v']); }
+        if (j == 9 && sheet[sheetCol.profile10 + i] != null) { set = selectPermission(sheet[sheetCol.profile10 + i]['v']); }
 
         // 編集権限（editable）
         permissions[j].profilePermisson[cnt2].editable = set[0];

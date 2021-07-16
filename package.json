@@ -1,14 +1,14 @@
 {
-  "name": "salesforce-upsert-customfiled-tool",
+  "name": "salesforce-xlsx-to-customfiled",
   "version": "1.0.0",
-  "description": "Upsert CustomField and FieldPermissions with Excel - alpha version",
+  "description": "Upsert CustomField and FieldPermissions with Excel",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "author": "takahiro717",
+  "author": "Takahiro Komori",
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.57",
@@ -32,21 +32,7 @@
       },
       "makers": [
         {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "salesforce-upsert-customfiled-tool"
-          }
-        },
-        {
           "name": "@electron-forge/maker-zip"
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
         }
       ]
     }
