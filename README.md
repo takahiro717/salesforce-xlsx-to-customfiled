@@ -4,17 +4,16 @@ Upsert CustomField and FieldPermissions with Excel.
 
 This is [Electron](https://www.electronjs.org/)-based application.
 
-エクセルファイルに定義したカスタム項目情報を読み取りJSforceのmetadata APIで一括登録するものです。
+エクセルファイルに定義したカスタム項目情報を
+[SheetJS](https://github.com/SheetJS/sheetjs)で読み取り、[JSforce](https://github.com/jsforce/jsforce)でmetadata APIを使って一括登録するものです。
 
-もともとコマンドで動かしていたものを身内向けにElectronでデスクトップアプリ化したものです。
+もともとコマンドで動かしていたものを身内向けにElectronでデスクトップアプリ化しました。
 
 <img src="./screenshot.png">
 
 ## Platforms
 
 Windows 64bit.
-
-Electron勉強後に他のプラットフォームも用意するかも。
 
 ## Usage
 
@@ -38,11 +37,24 @@ There are sample definitions in "CustomFieldTest\_\_c.xlsx" file.
 
 samplesの中に書き方をまとめたエクセルがあります。
 
-### Retry Execute
+### Never give up
 
 If you defined formula type field, perhaps the field will be error. Please retry.
 
 項目の UPSERT は 10 件ずつ一括処理をするため数式などはエラーになりやすいです。再実行すると通ります。
+
+## Roadmap
+- I will do code refactoring.
+- Writing unit test with Jest.
+- Release command line version.
+
+勉強しながら社内用に動けばいいやという作り方だったのでコードをまず綺麗にしたい。テストコード早めに書きたい。
+
+コマンドライン版もリリースしたい。
+Salesforce DXを使っている人はコマンドライン版のほうが使いやすいです。
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
