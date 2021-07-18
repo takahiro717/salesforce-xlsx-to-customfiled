@@ -1,4 +1,3 @@
-
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 const XLSX = require("xlsx");
@@ -110,7 +109,7 @@ function showFilePath() {
 
 
 /**
- * リザルト表示用のHTMLを指定　いらんかも
+ * リザルト表示用のHTMLを指定
  * @param {string} html
  */
 function showResultHtml(html) {
@@ -178,7 +177,7 @@ function JSforceUpsert() {
 }
 
 /**
- * JSforceでカスタム項目のUPSERTをする 後で処理をばらす
+ * JSforceでカスタム項目のUPSERTをする
  * @param {object[]} customFields 
  */
 async function upsert(conn, customFields, profiles, fieldPermissions) {
