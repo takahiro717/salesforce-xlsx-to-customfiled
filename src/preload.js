@@ -1,3 +1,6 @@
+import { Core } from '../lib/core.js';
+const core = new Core();
+
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 const XLSX = require("xlsx");
@@ -12,6 +15,7 @@ const excelCol = 813; //13以上の数値、エクセル行の813まで確認す
 let workbook;
 let sheet;
 let upsertResultText;
+let slicedFields;
 
 // console文字の色指定
 const consoleColorRed = '\u001b[31m';
@@ -604,7 +608,7 @@ function getPermissionsFromXslx(profiles) {
         permissions[j].profilePermisson[cnt2].field = sheet['A3']['v'] + "." + sheet[sheetCol.fullName + i]['v'];
 
         // editableとreadableを関数から取得　if文の中に書くと長くなるので関数化した
-        if (j == 0 && sheet[sheetCol.profile1 + i] != null) { set = selectPermission(sheet[sheetCol.profile1 + i]['v']); }
+        if (j == 0 && sheet[sheetCol.profile1 + i] != null) { set = core.selectPermission(sheet[sheetCol.profile1 + i]['v']); }
         if (j == 1 && sheet[sheetCol.profile2 + i] != null) { set = selectPermission(sheet[sheetCol.profile2 + i]['v']); }
         if (j == 2 && sheet[sheetCol.profile3 + i] != null) { set = selectPermission(sheet[sheetCol.profile3 + i]['v']); }
         if (j == 3 && sheet[sheetCol.profile4 + i] != null) { set = selectPermission(sheet[sheetCol.profile4 + i]['v']); }
