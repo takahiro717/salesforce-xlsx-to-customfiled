@@ -1,6 +1,6 @@
 {
   "name": "salesforce-xlsx-to-customfiled",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Upsert CustomField and FieldPermissions with Excel",
   "main": "main.js",
   "scripts": {

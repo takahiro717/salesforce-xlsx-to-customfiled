@@ -15,7 +15,7 @@ This is [Electron](https://www.electronjs.org/)-based application.
 
 Windows 64bit.
 
-## Usage
+## Usage Desktop
 
 ### Quick Start
 
@@ -37,7 +37,7 @@ There are sample definitions in "CustomFieldTest\_\_c.xlsx" file.
 
 samples の中に書き方をまとめたエクセルがあります。
 
-### Never give up
+### Please retry.
 
 If you defined formula type field, perhaps the field will be error. Please retry.
 
@@ -49,10 +49,48 @@ If you defined formula type field, perhaps the field will be error. Please retry
 - Writing unit test with Jest.
 - Release command line version.
 
-勉強しながら社内用に動けばいいやという作り方だったのでコードをまず綺麗にしたい。テストコード早めに書きたい。
+勉強しながら社内用に動けばいいやという作り方だったのでコードをまず綺麗にしたい。
 
-コマンドライン版もリリースしたい。
-Salesforce DX を使っている人はコマンドライン版のほうが使いやすいです。
+コマンドで使えるようにする。
+Salesforce DX を使っている人はコマンド版のほうが使いやすいはず。
+
+## Usage Command
+
+install Node.js 
+動作確認済み 14.17.2
+
+Download xtcf.js
+
+SFDX Project
+
+```
+npm install --save-dev jsforce@1.10.1
+```
+
+```
+npm install --save-dev xlsx
+```
+
+```
+// jsforce メタデータの保存と更新
+const jsforce = require('jsforce');
+const conn = new jsforce.Connection({ loginUrl: 'https://test.salesforce.com/' });　//ログインURLの指定する
+const username = "xxxx@xxxxxx.xxx"; //ログイン用ユーザーネーム
+const password = "password";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
+const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
+```
+
+
+```
+cd util/
+```
+
+```
+node sfcf.js xxxx.xlsx
+```
+
+
+
 
 ## Contributing
 
