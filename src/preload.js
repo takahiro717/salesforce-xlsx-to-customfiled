@@ -1,5 +1,5 @@
-import { Core } from '../lib/core.js';
-const core = new Core();
+//const forceClass = require('./force.js');
+//const force = new forceClass();
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -10,10 +10,12 @@ let username;
 let password;
 let xlsxfile;
 
-// jsforce用の設定
+// XLSX用の設定
 const excelCol = 813; //13以上の数値、エクセル行の813まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 let workbook;
 let sheet;
+
+// Jsforce用の設定
 let upsertResultText;
 let slicedFields;
 
@@ -21,7 +23,7 @@ let slicedFields;
 const consoleColorRed = '\u001b[31m';
 const consoleColorReset = '\u001b[0m';
 
-// 項目シートの列定義　※エクセルの列の増減をやりやすくするためのオブジェクト
+// 項目シートの列定義 ※エクセルの列の増減をやりやすくするためのオブジェクト
 const sheetCol = {
   label: "A", //ラベル（label）
   fullName: "B", //項目名
@@ -80,7 +82,7 @@ const sheetCol = {
   profile9: "AT", //カスタム項目セキュリティ９
   profileName10: "AU5", //カスタム項目セキュリティ１０の名前
   profile10: "AU", //カスタム項目セキュリティ１０
-  FIX: "AV", //FIX
+  FIX: "AV" //FIX
 }
 
 /**
@@ -152,7 +154,7 @@ function JSforceUpsert() {
   console.log(customFields);
 
   // フィールドレベルセキュリティ設定用プロファイル定義配列 Admin=システム管理者
-  const profiles = getProfilesFromXslx(); //　エクセルからデータを登録する際にはこちらの行を有効にする
+  const profiles = getProfilesFromXslx(sheet, sheetCol); // エクセルからデータを登録する際にはこちらの行を有効にする
   console.log(profiles);
 
   // フィールドレベルセキュリティ用オブジェクト配列の宣言
@@ -350,7 +352,7 @@ function getCustomFieldsFromXlsx() {
         let listdata = sheet[sheetCol.valueSet_valueSetDefinition_value + i]['v'].split("\r\n"); //\r\nでsplit
         for (let j = 0; j < listdata.length; j++) {
           if (j == 0) { // ループの初回のみデフォルト設定の判定を行う
-            if (sheet[sheetCol.valueSetDefault + i]) { valueSetDefault = true; } //先頭行デフォルト設定　記述があればtrue
+            if (sheet[sheetCol.valueSetDefault + i]) { valueSetDefault = true; } //先頭行デフォルト設定 記述があればtrue
           } else {
             valueSetDefault = false; //ループ2週目以降はfalseを設定する
           }
@@ -437,7 +439,7 @@ function getCustomFieldsFromXlsx() {
         if (sheet[sheetCol.formulaTreatBlanksAs + i]['v'] == "空白" || sheet[sheetCol.formulaTreatBlanksAs + i]['v'] == "Blank") {
           fields[cnt].formulaTreatBlanksAs = 'BlankAsBlank'; // 「空白」がエクセルに入力されている場合
         } else {
-          fields[cnt].formulaTreatBlanksAs = 'BlankAsZero'; // 「0」がエクセルに入力されている場合                    　　　　　　
+          fields[cnt].formulaTreatBlanksAs = 'BlankAsZero'; // 「0」がエクセルに入力されている場合
         }
       }
       /*
@@ -487,7 +489,7 @@ function getCustomFieldsFromXlsx() {
       if (sheet[sheetCol.referenceTo + i]) {
         fields[cnt].referenceTo = sheet[sheetCol.referenceTo + i]['v'];
         // 参照関係ラベルの自動指定
-        fields[cnt].relationshipLabel = sheet['B3']['v'];　//オブジェクトラベル エクセルのB3に書く
+        fields[cnt].relationshipLabel = sheet['B3']['v']; //オブジェクトラベル エクセルのB3に書く
         //子リレーション名の自動指定
         let fromName = sheet['A3']['v'].replace('__c', ''); //子リレーション名用に__cを削除
         let toName = sheet[sheetCol.referenceTo + i]['v'].replace('__c', ''); // 子リレーション名用に__cを削除
@@ -607,8 +609,8 @@ function getPermissionsFromXslx(profiles) {
         // カスタム項目（field）
         permissions[j].profilePermisson[cnt2].field = sheet['A3']['v'] + "." + sheet[sheetCol.fullName + i]['v'];
 
-        // editableとreadableを関数から取得　if文の中に書くと長くなるので関数化した
-        if (j == 0 && sheet[sheetCol.profile1 + i] != null) { set = core.selectPermission(sheet[sheetCol.profile1 + i]['v']); }
+        // editableとreadableを関数から取得 if文の中に書くと長くなるので関数化した
+        if (j == 0 && sheet[sheetCol.profile1 + i] != null) { set = selectPermission(sheet[sheetCol.profile1 + i]['v']); }
         if (j == 1 && sheet[sheetCol.profile2 + i] != null) { set = selectPermission(sheet[sheetCol.profile2 + i]['v']); }
         if (j == 2 && sheet[sheetCol.profile3 + i] != null) { set = selectPermission(sheet[sheetCol.profile3 + i]['v']); }
         if (j == 3 && sheet[sheetCol.profile4 + i] != null) { set = selectPermission(sheet[sheetCol.profile4 + i]['v']); }

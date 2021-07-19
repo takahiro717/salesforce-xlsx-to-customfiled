@@ -8,7 +8,7 @@ function createWindow() {
     width: 600,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, 'lib/preload.js')
+      preload: path.join(__dirname, 'src/preload.js')
     }
   })
 
