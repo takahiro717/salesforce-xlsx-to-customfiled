@@ -58,15 +58,14 @@ npm install --save-dev xlsx
 ```
 
 ### Update login definision in sfxtcf.js
-[JSforce document](https://jsforce.github.io/document/#username-and-password-login) is very usefull.
+Refer [JSforce document](https://jsforce.github.io/document/#username-and-password-login)
 ```
 // jsforce メタデータの保存と更新
-const jsforce = require('jsforce');
 const conn = new jsforce.Connection({ loginUrl: 'https://test.salesforce.com/' });　//ログインURLの指定する
 const username = "xxxx@xxxxxx.xxx"; //ログイン用ユーザーネーム
 const password = "password";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
-const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 ```
+
 
 ### Run
 ```
@@ -150,11 +149,9 @@ npm install --save-dev xlsx
 ソース中のコメントを参考にしてログイン情報を書き換えます。
 ```
 // jsforce メタデータの保存と更新
-const jsforce = require('jsforce');
 const conn = new jsforce.Connection({ loginUrl: 'https://test.salesforce.com/' });　//ログインURLの指定する
 const username = "[xxxx@xxxxxx.xxx]"; //ログイン用ユーザーネーム
 const password = "[password+token]";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
-const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 ```
 
 ### ６．作業用フォルダ内でコマンドを実行します
