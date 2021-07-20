@@ -1,11 +1,8 @@
 /*
-カスタム項目作るくん
-
 使い方
-$ node xlsx.js test.xlsx
+$ node sfxtcf.js ./samples/JP_CustomFieldTest__c.xlsx
 引数に対象のエクセルを入力する。
 ※テキストエリアは文字数の入力があるとエラーになる
-※profiles配列の設定を事前に行うこと
 */
 
 /* --- 初期設定 --- */
@@ -13,10 +10,7 @@ $ node xlsx.js test.xlsx
 // xlsx エクセル読み込み
 const XLSX = require("xlsx");
 const workbook = XLSX.readFile(process.argv[2]); // 引数でエクセルを指定 ※process.argv[2]=第一引数
-const sheet = workbook.Sheets["項目"];
-
-// simple XML to JSON converter
-// const { convertXML, createAST } = require("simple-xml-to-json");
+const sheet = workbook.Sheets["Field"];
 
 // jsforce メタデータの保存と更新
 const jsforce = require('jsforce');
@@ -133,53 +127,33 @@ fs.writeFile('workbook.txt', JSON.stringify(workbook), (err, data) => {
 conn.login(username, password)
     .then(() => {
         // API制限回避のため、配列を10個ずつに分割して処理している
-        for (let i = 0; i < customFields.length; i += 10) {
-            let slicedFields = customFields.slice(i, i + 10);
-            upsert(slicedFields);
-        }
-        security(profiles, fieldPermissions);
+        upsert();
     }, err => {
         console.error(err);
     });
 
 /**
- * JSforceでカスタム項目レベルセキュリティの設定をする
- * @param {string[]} profiles プロファイル名の配列
- * @param {object[]} fieldPermissions 
- */
-function security(profiles, fieldPermissions) {
-    for (let i = 0; i < profiles.length; i++) { //プロファイルの数だけforで処理
-        conn.metadata.update('Profile', { fullName: profiles[i], fieldPermissions: fieldPermissions[i].profilePermisson })
-            .then(results => {
-                if (results.success == false) {
-                    console.log(consoleColorRed + 'set permission result : ' + results.success + ' : ' + results.fullName + consoleColorReset);
-                } else {
-                    console.log('set permission result : ' + results.success + ' : ' + results.fullName);
-                }
-            }, err => {
-                console.error(err);
-            });
-    }
-}
-
-/**
  * JSforceでカスタム項目のUPSERTをする
  * @param {object[]} slicedFields 10件ずつのカスタムフィールドメタデータオブジェクトの配列
  */
-function upsert(slicedFields) {
-    conn.metadata.upsert('CustomField', slicedFields)
-        .then(results => {
-            // 結果が1件のときは配列ではなくオブジェクトで返ってくる
-            if (Array.isArray(results) == false) {
-                upsertResultDisplay(results);
-            } else {
-                for (let result of results) {
-                    upsertResultDisplay(result);
+async function upsert() {
+    for (let i = 0; i < customFields.length; i += 10) {
+        let slicedFields = customFields.slice(i, i + 10);
+        await conn.metadata.upsert('CustomField', slicedFields)
+            .then(results => {
+                // 結果が1件のときは配列ではなくオブジェクトで返ってくる
+                if (Array.isArray(results) == false) {
+                    upsertResultDisplay(results);
+                } else {
+                    for (let result of results) {
+                        upsertResultDisplay(result);
+                    }
                 }
-            }
-        }, err => {
-            if (err) { console.error(err); }
-        });
+            }, err => {
+                if (err) { console.error(err); }
+            });
+    }
+    security();
 }
 
 /**
@@ -191,6 +165,26 @@ function upsertResultDisplay(result) {
         console.log(consoleColorRed + 'upsert result : ' + result.success + ' : ' + result.fullName + consoleColorReset);
     } else {
         console.log('upsert result : ' + result.success + ' : ' + result.fullName);
+    }
+}
+
+/**
+ * JSforceでカスタム項目レベルセキュリティの設定をする
+ * @param {string[]} profiles プロファイル名の配列
+ * @param {object[]} fieldPermissions 
+ */
+function security() {
+    for (let i = 0; i < profiles.length; i++) { //プロファイルの数だけforで処理
+        conn.metadata.update('Profile', { fullName: profiles[i], fieldPermissions: fieldPermissions[i].profilePermisson })
+            .then(results => {
+                if (results.success == false) {
+                    console.log(consoleColorRed + 'set permission result : ' + results.success + ' : ' + results.fullName + consoleColorReset);
+                } else {
+                    console.log('set permission result : ' + results.success + ' : ' + results.fullName);
+                }
+            }, err => {
+                console.error(err);
+            });
     }
 }
 

@@ -4,11 +4,6 @@ Upsert CustomField and FieldPermissions with Excel.
 
 This is [Electron](https://www.electronjs.org/)-based application.
 
-エクセルファイルに定義したカスタム項目情報を
-[SheetJS](https://github.com/SheetJS/sheetjs)で読み取り、[JSforce](https://github.com/jsforce/jsforce)で metadata API を使って一括登録するものです。
-
-もともとコマンドで動かしていたものを身内向けに Electron でデスクトップアプリ化しました。
-
 <img src="asset/screenshot.png">
 
 ## Platforms
@@ -35,42 +30,35 @@ Windows 64bit.
 
 There are sample definitions in "CustomFieldTest\_\_c.xlsx" file.
 
-samples の中に書き方をまとめたエクセルがあります。
-
 ### Please retry.
 
 If you defined formula type field, perhaps the field will be error. Please retry.
 
-項目の UPSERT は 10 件ずつ一括処理をするため数式などはエラーになりやすいです。再実行すると通ります。
+## Usage command line version
 
-## Roadmap
+<img src="asset/video.gif">
 
-- I will do code refactoring.
-- Writing unit test with Jest.
-- Release command line version.
+Download [sfxtcf.js](./)
 
-勉強しながら社内用に動けばいいやという作り方だったのでコードをまず綺麗にしたい。
-
-コマンドで使えるようにする。
-Salesforce DX を使っている人はコマンド版のほうが使いやすいはず。
-
-## Usage Command
-
-install Node.js 
-動作確認済み 14.17.2
-
-Download xtcf.js
-
-SFDX Project
-
+###  Create folder and execute commands bellow.
 ```
+npm init -y
 npm install --save-dev jsforce@1.10.1
-```
-
-```
 npm install --save-dev xlsx
 ```
 
+### Set sfxtcf.js and .xlsx file.
+```
+-CreatedFolder
+├ node_modules
+├ package.json
+├ package-lock.json
+├ sfxtcf.js
+└[.xles file]
+```
+
+### Update login definision in sfxtcf.js
+[JSforce document](https://jsforce.github.io/document/#username-and-password-login) is very usefull.
 ```
 // jsforce メタデータの保存と更新
 const jsforce = require('jsforce');
@@ -80,24 +68,95 @@ const password = "password";// パスワードとセキュリティトークン 
 const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 ```
 
-
+### Run
 ```
-cd util/
+node sfxtcf.js xxxx.xlsx
 ```
-
-```
-node sfcf.js xxxx.xlsx
-```
-
-
-
+Finish when all permission results are displayed.
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome.
+
 
 ## License
 
 [MIT](/LICENSE)
 
 Copyright (c) 2021 Takahiro Komori
+
+***
+
+# ここから日本語
+
+エクセルファイルに定義したカスタム項目情報を[SheetJS](https://github.com/SheetJS/sheetjs)で読み取り、[JSforce](https://github.com/jsforce/jsforce)で metadata API を使って一括登録するものです。
+
+もともと自分と社内向けにコマンドラインで動かしていたものをElectronを使ってデスクトップアプリケーションとして動くようにしました。
+
+## 対応プラットフォーム
+
+Windowsのみ
+
+※テストしていないけどコマンドライン版なら他の環境でも使えるかもしれません
+
+## 使い方
+
+### クイックスタート
+
+1. [salesforce-xlsx-to-customfiled-win32-x64-1.0.0.zip
+   ](https://github.com/takahiro717/salesforce-xlsx-to-customfiled/releases)をダウンロードします
+2. 展開して「salesforce-xlsx-to-customfiled.exe」を実行します。
+3. 立ち上がった画面にログイン情報を入力します
+4. samplesフォルダの「MinimumSample_Account.xlsx」を選択します
+5. 「Execute」ボタンを押します
+6. 権限の結果が表示されたら完了です
+
+取引先にabcText__cが生成されていたら成功です。
+
+### カスタム項目をエクセルに定義する
+
+samplesの中の「CustomFieldTest\_\_c.xlsx」に対応しているデータ型の記入例があります。
+
+### 失敗しやすいので再実行が必要です
+
+Metadata APIの仕様上、数式や積み上げ集計項目はエラーになりやすいです。<br>予め条件になる項目が登録された状態でないとCreateが成功しません。
+
+再実行すると定義に間違いが無ければ成功します。
+
+## コマンドラインでの使い方
+### １．Node.jsのインストール
+Node.jsがインストールされている必要があります。
+動作確認済みのバージョンは14.17.2です。
+
+### ２．適当なフォルダでpackage.jsonを作る
+```
+npm init -y
+```
+例えばSalesforce DXを使っていて既にプロジェクトフォルダがあり、その中で使いたいといったときはpackage.jsonがあるはずなのでこの作業は必要ありません。
+
+### ３．バージョンを指定してjsforceをインストールする
+```
+npm install --save-dev jsforce@1.10.1
+```
+
+### ４．sheetJS(xlsx)をインストールする
+```
+npm install --save-dev xlsx
+```
+
+### ５．sfxtcf.js内の設定を書き換えます
+ソース中のコメントを参考にしてログイン情報を書き換えます。
+```
+// jsforce メタデータの保存と更新
+const jsforce = require('jsforce');
+const conn = new jsforce.Connection({ loginUrl: 'https://test.salesforce.com/' });　//ログインURLの指定する
+const username = "[xxxx@xxxxxx.xxx]"; //ログイン用ユーザーネーム
+const password = "[password+token]";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
+const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
+```
+
+### ６．作業フォルダ内でコマンドを実行します
+nodeコマンドから第一引数に「sfxtcf.js」を指定して、第二引数にカスタム項目を定義したエクセルファイルを指定します。
+```
+node sfxtcf.js xxxx.xlsx
+```
