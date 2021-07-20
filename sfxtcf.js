@@ -15,8 +15,8 @@ const sheet = workbook.Sheets["Field"];
 // jsforce メタデータの保存と更新
 const jsforce = require('jsforce');
 const conn = new jsforce.Connection({ loginUrl: 'https://login.salesforce.com/' }); //ログインURLの指定が必要な場合
-const username = "komori@cunning-koala-3uji3.com"; //ログイン用ユーザーネーム
-const password = "takahiro717amyE4KDe9dSdBFBg1YpdTX86f";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
+const username = ""; //ログイン用ユーザーネーム
+const password = "";// パスワードとセキュリティトークン スペース無しでつなげる IP制限を解除しているとトークンは不要
 const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 
 // 項目シートの列定義 ※エクセルの列の増減をやりやすくするためのオブジェクト

@@ -38,7 +38,7 @@ If you defined formula type field, perhaps the field will be error. Please retry
 
 <img src="asset/video.gif">
 
-Download [sfxtcf.js](./)
+Download [sfxtcf.js](https://github.com/takahiro717/salesforce-xlsx-to-customfiled/releases)
 
 ###  Create folder and execute commands bellow.
 ```
@@ -124,6 +124,8 @@ Metadata APIの仕様上、数式や積み上げ集計項目はエラーにな�
 再実行すると定義に間違いが無ければ成功します。
 
 ## コマンドラインでの使い方
+[sfxtcf.js](https://github.com/takahiro717/salesforce-xlsx-to-customfiled/releases) を使います。
+
 ### １．Node.jsのインストール
 Node.jsがインストールされている必要があります。
 動作確認済みのバージョンは14.17.2です。
@@ -155,8 +157,20 @@ const password = "[password+token]";// パスワードとセキュリティト�
 const excelCol = 300; //13以上の数値、エクセル行の300まで確認する。それ以上の場合は数値を変更する ※自動取得が安定しないらしいので固定値にした
 ```
 
-### ６．作業フォルダ内でコマンドを実行します
+### ６．作業用フォルダ内でコマンドを実行します
+作業用フォルダは以下のようになっているはずです。
+```
+-CreatedFolder
+├ node_modules
+├ package.json
+├ package-lock.json
+├ sfxtcf.js
+└[.xles file]
+```
+
 nodeコマンドから第一引数に「sfxtcf.js」を指定して、第二引数にカスタム項目を定義したエクセルファイルを指定します。
 ```
 node sfxtcf.js xxxx.xlsx
 ```
+
+エラー等が表示されずに最後に permission result が表示されたら成功です。
